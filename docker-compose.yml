@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  dev-web:
+    container_name: dev-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./web:/usr/src/app/web
+    command: ["./run.sh"]
+    ports:
+      - "8000:8000"
