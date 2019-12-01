@@ -1,14 +1,15 @@
 version: "3.7"
 
 services:
-  dev-web:
-    container_name: dev-web
+  dev-web-gunicorn:
+    container_name: dev-web-gunicorn
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     volumes:
       - ./web:/usr/src/app/web
+      - ./tmp:/usr/src/app/tmp
     command: ["./run.sh"]
     ports:
       - "8000:8000"

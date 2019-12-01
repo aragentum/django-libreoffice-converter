@@ -7,4 +7,4 @@ until python manage.py migrate; do
   sleep 5
 done
 
-python manage.py runserver 0.0.0.0:8000
+gunicorn -c gunicorn.py web.wsgi
