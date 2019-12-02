@@ -131,5 +131,6 @@ else:
     LIBREOFFICE_PATH = 'lowriter'
 
 
-CONVERTER_TEMP_FILES_FOLDER = os.path.join(os.getcwd(), 'tmp')
 CONVERTER_TIMEOUT_PROCESS = 60
+CONVERTER_FILE_MAX_SIZE = 3 * 1024 * 1024  # 3MB
+CONVERTER_TEMP_FILES_FOLDER = os.path.join(os.getcwd(), 'tmp')

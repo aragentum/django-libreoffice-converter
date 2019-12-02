@@ -45,7 +45,7 @@ class LibreOfficeConverterService(Service):
             raise LibreOfficeError("Unknown conversion error.")
 
     def _run_libreoffice_subprocess(self, input_file_path: str, converter: str) -> bytes:
-        lo_profile_path = os.path.join(self.TEMP_PROFILES_FOLDER, f"lo_profile_{os.getpid()}")
+        lo_profile_path = os.path.join(self.TEMP_PROFILES_FOLDER, f"lo_p_{os.getpid()}")
         if sys.platform == 'win32':
             lo_profile_path = f'/{lo_profile_path}'
         args = [settings.LIBREOFFICE_PATH,
