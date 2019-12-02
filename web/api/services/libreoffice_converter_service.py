@@ -4,9 +4,9 @@ import signal
 import sys
 import logging
 import subprocess
+import tempfile
 
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 
 from web.api.exceptions import LibreOfficeError
 from web.api.utils import Service
@@ -17,14 +17,12 @@ class LibreOfficeConverterService(Service):
 
     def __init__(self) -> None:
         super().__init__()
-        if settings.CONVERTER_TEMP_FILES_FOLDER:
-            self.TEMP_FILES_FOLDER = settings.CONVERTER_TEMP_FILES_FOLDER
-            os.makedirs(self.TEMP_FILES_FOLDER, exist_ok=True)
 
-            self.TEMP_PROFILES_FOLDER = os.path.join(self.TEMP_FILES_FOLDER, 'profiles')
-            os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
-        else:
-            raise ImproperlyConfigured("Unset the CONVERTER_TEMP_FILES_FOLDER setting variable")
+        self.TEMP_FILES_FOLDER = getattr(settings, 'CONVERTER_TEMP_FOLDER', None) or tempfile.gettempdir()
+        os.makedirs(self.TEMP_FILES_FOLDER, exist_ok=True)
+
+        self.TEMP_PROFILES_FOLDER = getattr(settings, 'CONVERTER_TEMP_FOLDER', None) or tempfile.gettempdir()
+        os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
 
     def convert_to_pdf(self, input_file_path) -> str:
         return self._convert_to(input_file_path=input_file_path, converter='pdf')
@@ -45,6 +43,7 @@ class LibreOfficeConverterService(Service):
             raise LibreOfficeError("Unknown conversion error.")
 
     def _run_libreoffice_subprocess(self, input_file_path: str, converter: str) -> bytes:
+        # prepare args
         lo_profile_path = os.path.join(self.TEMP_PROFILES_FOLDER, f"lo_p_{os.getpid()}")
         if sys.platform == 'win32':
             lo_profile_path = f'/{lo_profile_path}'
@@ -54,13 +53,14 @@ class LibreOfficeConverterService(Service):
                 '--convert-to', converter,
                 '--outdir', self.TEMP_FILES_FOLDER,
                 input_file_path]
-
+        # create subprocess
         if sys.platform == 'win32':
             process = subprocess.Popen(args, stdout=subprocess.PIPE,
                                        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
         else:
             process = subprocess.Popen(args, stdout=subprocess.PIPE,
                                        preexec_fn=os.setsid)
+        # run subprocess
         try:
             process_stdout, _ = process.communicate(timeout=settings.CONVERTER_TIMEOUT_PROCESS)
         except subprocess.TimeoutExpired:
