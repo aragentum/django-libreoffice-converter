@@ -9,7 +9,7 @@ An example Django service that converts files into multiple workers using LibreO
 ## Stack
 
 * Python 3.7
-* Django 2.2.7
+* Django 2.2.8
 * Django REST Framework 3.10.3
 * Gunicorn 20.0.4
 * LibreOffice 6.1.5.2
