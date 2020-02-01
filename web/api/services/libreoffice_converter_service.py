@@ -1,10 +1,8 @@
 import os
 import re
 import signal
-import sys
 import logging
 import subprocess
-import tempfile
 
 from django.conf import settings
 
@@ -18,10 +16,12 @@ class LibreOfficeConverterService(Service):
     def __init__(self) -> None:
         super().__init__()
 
-        self.TEMP_FILES_FOLDER = getattr(settings, 'CONVERTER_TEMP_FOLDER', None) or tempfile.gettempdir()
+        # files folder
+        self.TEMP_FILES_FOLDER = settings.CONVERTER_TEMP_FOLDER
         os.makedirs(self.TEMP_FILES_FOLDER, exist_ok=True)
 
-        self.TEMP_PROFILES_FOLDER = getattr(settings, 'CONVERTER_TEMP_FOLDER', None) or tempfile.gettempdir()
+        # libreoffice profiles folder
+        self.TEMP_PROFILES_FOLDER = settings.CONVERTER_TEMP_FOLDER
         os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
 
     def convert_to_pdf(self, input_file_path) -> str:
@@ -45,31 +45,23 @@ class LibreOfficeConverterService(Service):
     def _run_libreoffice_subprocess(self, input_file_path: str, converter: str) -> bytes:
         # prepare args
         lo_profile_path = os.path.join(self.TEMP_PROFILES_FOLDER, f"lo_p_{os.getpid()}")
-        if sys.platform == 'win32':
-            lo_profile_path = f'/{lo_profile_path}'
         args = [settings.LIBREOFFICE_PATH,
                 f"-env:UserInstallation=file://{lo_profile_path}",
                 '--headless', '--norestore',
                 '--convert-to', converter,
                 '--outdir', self.TEMP_FILES_FOLDER,
                 input_file_path]
+
         # create subprocess
-        if sys.platform == 'win32':
-            process = subprocess.Popen(args, stdout=subprocess.PIPE,
-                                       creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
-        else:
-            process = subprocess.Popen(args, stdout=subprocess.PIPE,
-                                       preexec_fn=os.setsid)
+        process = subprocess.Popen(args, stdout=subprocess.PIPE,
+                                   preexec_fn=os.setsid)
+
         # run subprocess
         try:
             process_stdout, _ = process.communicate(timeout=settings.CONVERTER_TIMEOUT_PROCESS)
         except subprocess.TimeoutExpired:
             self.logger.error('Timeout subprocess for file {}'.format(input_file_path))
-            if sys.platform == 'win32':
-                process.send_signal(signal.CTRL_BREAK_EVENT)
-                process.kill()
-            else:
-                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
             raise LibreOfficeError("Timeout converting process.")
 
         return process_stdout

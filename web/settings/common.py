@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
+from tempfile import gettempdir
 
 from web.run.secret_key import *
 
@@ -122,9 +123,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Converter settings
-
-if sys.platform == 'win32':
-    LIBREOFFICE_PATH = 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'
 if sys.platform == 'darwin':
     LIBREOFFICE_PATH = '/Applications/LibreOffice.app/Contents/MacOS/soffice'
 else:
@@ -133,4 +131,6 @@ else:
 # Converter config
 CONVERTER_TIMEOUT_PROCESS = 60
 CONVERTER_FILE_MAX_SIZE = 3 * 1024 * 1024  # 3MB
-# CONVERTER_TEMP_FOLDER = os.path.join(os.getcwd(), 'tmp')
+
+# Custom convert temp folder
+CONVERTER_TEMP_FOLDER = gettempdir()
