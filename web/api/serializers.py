@@ -1,19 +1,15 @@
 from django.conf import settings
 from rest_framework import serializers
-from django.core.validators import FileExtensionValidator
 
-from web.api.validators import FileValidator
-
-WORD_CONTENT_TYPES = ('application/msword',
-                      'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+from web.api.consts import TEXT_MIME_TYPES, SPREADSHEET_MIME_TYPES, PRESENTATION_MIME_TYPES
+from web.api.validators import FileContentTypeValidator
 
 
-class WordFileSerializer(serializers.Serializer):
+class TextFileSerializer(serializers.Serializer):
     file = serializers.FileField(
         allow_empty_file=False,
-        validators=[FileValidator(max_size=settings.CONVERTER_FILE_MAX_SIZE,
-                                  content_types=WORD_CONTENT_TYPES),
-                    FileExtensionValidator(['doc', 'docx'])])
+        validators=[FileContentTypeValidator(max_size=settings.CONVERTER_FILE_MAX_SIZE,
+                                             mime_types=TEXT_MIME_TYPES)])
 
     class Meta:
         fields = ('file',)
@@ -22,4 +18,36 @@ class WordFileSerializer(serializers.Serializer):
         raise NotImplementedError()
 
     def update(self, instance, validated_data):
-        raise NotImplementedError
+        raise NotImplementedError()
+
+
+class SpreadsheetFileSerializer(serializers.Serializer):
+    file = serializers.FileField(
+        allow_empty_file=False,
+        validators=[FileContentTypeValidator(max_size=settings.CONVERTER_FILE_MAX_SIZE,
+                                             mime_types=SPREADSHEET_MIME_TYPES)])
+
+    class Meta:
+        fields = ('file',)
+
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()
+
+
+class PresentationFileSerializer(serializers.Serializer):
+    file = serializers.FileField(
+        allow_empty_file=False,
+        validators=[FileContentTypeValidator(max_size=settings.CONVERTER_FILE_MAX_SIZE,
+                                             mime_types=PRESENTATION_MIME_TYPES)])
+
+    class Meta:
+        fields = ('file',)
+
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()

@@ -24,10 +24,7 @@ class LibreOfficeConverterService(Service):
         self.TEMP_PROFILES_FOLDER = settings.CONVERTER_TEMP_FOLDER
         os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
 
-    def convert_to_pdf(self, input_file_path) -> str:
-        return self._convert_to(input_file_path=input_file_path, converter='pdf')
-
-    def _convert_to(self, input_file_path: str, converter: str):
+    def convert_to(self, input_file_path: str, converter: str):
         self.logger.debug("Converting file to %s: %s", converter, input_file_path)
         process_stdout = self._run_libreoffice_subprocess(input_file_path, converter)
         return self._parse_subprocess_stdout(process_stdout)
