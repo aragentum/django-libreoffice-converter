@@ -15,8 +15,8 @@ from rest_framework.status import (
     HTTP_200_OK
 )
 
-from web.api.consts import ConverterClass, TEXT_MIME_TYPES, SPREADSHEET_MIME_TYPES, PRESENTATION_MIME_TYPES
-from web.api.serializers import TextFileSerializer, SpreadsheetFileSerializer, PresentationFileSerializer
+from web.api.consts import *
+from web.api.serializers import *
 from web.api.services.libreoffice_converter_service import libreoffice_converter_service
 
 
@@ -30,6 +30,8 @@ def sample_api(request):
 @csrf_exempt
 @api_view(["POST"])
 def convert(request, converter_class: str, extension_from: str, extension_to: str):
+    extension_to = extension_to.lower()
+    extension_from = extension_from.lower()
     if extension_from == extension_to:
         raise ValidationError('The original extension must not be equal to the resulting extension.')
 
@@ -66,6 +68,9 @@ def _convert_define_serializer_and_mime_types(converter_class: str) -> (serializ
     elif converter_class == ConverterClass.PRESENTATION:
         Serializer = PresentationFileSerializer
         mime_types = PRESENTATION_MIME_TYPES
+    elif converter_class == ConverterClass.GRAPHIC:
+        Serializer = GraphicFileSerializer
+        mime_types = GRAPHIC_MIME_TYPES
     else:
         raise NotFound('Not found mime class.')
     return Serializer, mime_types

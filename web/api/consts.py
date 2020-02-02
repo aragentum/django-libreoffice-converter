@@ -3,6 +3,7 @@ class ConverterClass:
     TEXT = 'text'
     SPREADSHEET = 'spreadsheet'
     PRESENTATION = 'presentation'
+    GRAPHIC = 'graphic'
 
 
 # MIME TYPES
@@ -28,5 +29,12 @@ PRESENTATION_MIME_TYPES = {
     'application/pdf': ['pdf'],
     'application/vnd.ms-powerpoint': ['ppt'],
     'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['pptx'],
-    'application/vnd.oasis.opendocument.presentation': ['odp'],
+    'application/vnd.oasis.opendocument.presentation': ['odp']
+}
+
+GRAPHIC_MIME_TYPES = {
+    'image/bmp': ['bmp'],
+    'image/jpeg': ['jpeg', 'jpg'],
+    'image/png': ['png'],
+    'image/svg+xml': ['svg']
 }

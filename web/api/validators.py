@@ -44,7 +44,7 @@ class FileContentTypeValidator(object):
 
             # validate extension
             extension = os.path.splitext(data.name)[-1] if '.' in data.name else None
-            extension = extension.strip('.') if extension is not None else None
+            extension = extension.strip('.').lower() if extension is not None else None
             if extension is None or extension not in extensions:
                 raise ValidationError(self.error_messages['extension'].format(
                     mime_type=mime_type), 'extension')
