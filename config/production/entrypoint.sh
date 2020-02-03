@@ -7,4 +7,5 @@ until python manage.py migrate; do
   sleep 5
 done
 
-gunicorn -c gunicorn.py web.wsgi
+python manage.py collectstatic --no-input --clear
+gunicorn -c gunicorn.py --log-config logging.conf web.wsgi

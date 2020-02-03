@@ -1,15 +1,16 @@
 version: "3.7"
 
 services:
-  dev-web-gunicorn:
+  dev-web-converter:
     container_name: dev-web-gunicorn
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: config/development/Dockerfile
+    environment:
+      - DJANGO_SETTINGS_MODULE=web.settings.development
     restart: always
     volumes:
       - ./web:/usr/src/app/web
-      - ./tmp:/usr/src/app/tmp
-    command: ["./run.sh"]
+    command: ["./entrypoint.sh"]
     ports:
-      - "8000:8000"
+      - "8080:8000"

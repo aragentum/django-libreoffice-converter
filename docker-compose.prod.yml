@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  prod-web-converter:
+    container_name: dev-web-gunicorn
+    build:
+      context: .
+      dockerfile: config/production/Dockerfile
+    environment:
+      - DJANGO_SETTINGS_MODULE=web.settings.production
+    restart: always
+    command: ["./entrypoint.sh"]
+    ports:
+      - "8000:8000"

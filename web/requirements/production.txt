@@ -1,0 +1,5 @@
+Django==2.2.9
+djangorestframework==3.10.3
+pytz==2019.3
+gunicorn==20.0.4
+python-magic==0.4.15

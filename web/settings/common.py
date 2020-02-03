@@ -121,16 +121,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.environ.get("DJANGO_STATIC_FILES_PATH", '/staticfiles/')
 
-# Converter settings
+# Converter config
 if sys.platform == 'darwin':
     LIBREOFFICE_PATH = '/Applications/LibreOffice.app/Contents/MacOS/soffice'
 else:
     LIBREOFFICE_PATH = 'lowriter'
 
-# Converter config
 CONVERTER_TIMEOUT_PROCESS = 60
 CONVERTER_FILE_MAX_SIZE = 3 * 1024 * 1024  # 3MB
 
-# Custom convert temp folder
 CONVERTER_TEMP_FOLDER = gettempdir()
