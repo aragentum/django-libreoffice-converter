@@ -1,14 +1,37 @@
 version: "3.7"
 
 services:
+  prod-nginx-converter:
+    container_name: prod-nginx-converter
+    networks:
+      - converter-web-network
+    build:
+      context: .
+      dockerfile: config/production/nginx/Dockerfile
+    volumes:
+      - ./static_volume:/var/www/staticfiles
+    restart: always
+    depends_on:
+      - prod-web-converter
+    ports:
+      - "8081:80"
+
   prod-web-converter:
-    container_name: dev-web-gunicorn
+    container_name: prod-web-converter
+    networks:
+      - converter-web-network
     build:
       context: .
       dockerfile: config/production/Dockerfile
     environment:
       - DJANGO_SETTINGS_MODULE=web.settings.production
+    volumes:
+      - ./static_volume:/usr/src/app/staticfiles
+      - ./web:/usr/src/app/web
     restart: always
     command: ["./entrypoint.sh"]
     ports:
       - "8000:8000"
+
+networks:
+  converter-web-network:

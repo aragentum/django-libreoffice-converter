@@ -8,7 +8,7 @@ ARG REQUIREMENTS=${APP_NAME}/requirements/${APP_ENV}.txt
 WORKDIR ${WORKDIR}
 
 # create the app user
-RUN addgroup -S app && adduser -S app -G app
+RUN addgroup --system app && adduser --system --ingroup app app
 
 # install dependencies
 RUN apt-get update && apt-get install -y python3 python3-pip \
@@ -27,7 +27,7 @@ RUN chmod +x ./entrypoint.sh
 RUN pip install -r ${REQUIREMENTS}
 
 # create folder for staticfiles
-RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $WORKDIR/staticfiles
 
 # chown all the files to the app user
 RUN chown -R app:app $WORKDIR

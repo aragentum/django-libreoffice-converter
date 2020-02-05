@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   dev-web-converter:
-    container_name: dev-web-gunicorn
+    container_name: dev-web-converter
     build:
       context: .
       dockerfile: config/development/Dockerfile
