@@ -8,5 +8,5 @@ router = routers.DefaultRouter()
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^sample_api/$', sample_api),
-    url(r'^convert/(?P<converter_class>\w+)/(?P<extension_from>\w+)/to/(?P<extension_to>\w+)/$', convert)
+    url(r'^convert/(?P<converter_class>\w+)/to/(?P<extension_to>\w+)/$', convert)
 ]

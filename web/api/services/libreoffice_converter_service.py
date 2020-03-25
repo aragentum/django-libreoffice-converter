@@ -25,15 +25,17 @@ class LibreOfficeConverterService(Service):
         os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
 
     def convert_to(self, input_file_path: str, converter: str):
-        self.logger.debug("Converting file to %s: %s", converter, input_file_path)
+        self.logger.debug("Start converting file '%s' to %s", input_file_path, converter)
         process_stdout = self._run_libreoffice_subprocess(input_file_path, converter)
         return self._parse_subprocess_stdout(process_stdout)
 
     def _parse_subprocess_stdout(self, process_stdout: bytes):
+        self.logger.debug("Parsing subprocess output '%s'", process_stdout)
         match_output = re.search('-> (.*?) using filter', process_stdout.decode() if process_stdout else '')
         output_file_path = match_output.group(1) if match_output else None
 
         if output_file_path and os.path.isfile(output_file_path):
+            self.logger.info("Finished converting to '%s'", output_file_path)
             return output_file_path
         else:
             self.logger.error("Can't find converted file. Output: %s", process_stdout)
