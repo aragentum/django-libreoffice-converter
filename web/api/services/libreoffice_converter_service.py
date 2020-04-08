@@ -24,9 +24,9 @@ class LibreOfficeConverterService(Service):
         self.TEMP_PROFILES_FOLDER = settings.CONVERTER_TEMP_FOLDER
         os.makedirs(self.TEMP_PROFILES_FOLDER, exist_ok=True)
 
-    def convert_to(self, input_file_path: str, converter: str):
-        self.logger.debug("Start converting file '%s' to %s", input_file_path, converter)
-        process_stdout = self._run_libreoffice_subprocess(input_file_path, converter)
+    def convert_to(self, file_path: str, output_dir: str, converter: str):
+        self.logger.debug("Start converting file '%s' to %s in %s", file_path, converter, output_dir)
+        process_stdout = self._run_libreoffice_subprocess(file_path, output_dir, converter)
         return self._parse_subprocess_stdout(process_stdout)
 
     def _parse_subprocess_stdout(self, process_stdout: bytes):
@@ -41,14 +41,14 @@ class LibreOfficeConverterService(Service):
             self.logger.error("Can't find converted file. Output: %s", process_stdout)
             raise LibreOfficeError("Unknown conversion error.")
 
-    def _run_libreoffice_subprocess(self, input_file_path: str, converter: str) -> bytes:
+    def _run_libreoffice_subprocess(self, input_file_path: str, output_dir: str, converter: str) -> bytes:
         # prepare args
         lo_profile_path = os.path.join(self.TEMP_PROFILES_FOLDER, f"lo_p_{os.getpid()}")
         args = [settings.LIBREOFFICE_PATH,
                 f"-env:UserInstallation=file://{lo_profile_path}",
                 '--headless', '--norestore',
                 '--convert-to', converter,
-                '--outdir', self.TEMP_FILES_FOLDER,
+                '--outdir', output_dir,
                 input_file_path]
 
         # create subprocess
