@@ -9,8 +9,8 @@ An example Django service that converts files into multiple workers using LibreO
 ## Stack
 
 * Python 3.7
-* Django 2.2.9
-* Django REST Framework 3.10.3
+* Django 2.2.13
+* Django REST Framework 3.11.0
 * Gunicorn 20.0.4
 * LibreOffice 6.1.5.2
 
@@ -21,3 +21,9 @@ To start the `django-libreoffice-converter`, use the following command in the pr
 docker-compose up
 ```
 App should be up on http://localhost:8000, running Gunicorn in development mode.
+
+## Test
+To run tests you can use the follow command inside container (in folder project):
+```
+pytest
+```
