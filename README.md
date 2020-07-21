@@ -27,3 +27,14 @@ To run tests you can use the follow command inside container (in folder project)
 ```
 pytest
 ```
+
+## Code style
+To reformat all code in the project (except `web/settings`) run the follow command:
+```
+black web --exclude web/settings -l 100
+```
+
+To check whether the code can be reformatted run the follow command:
+```
+black web --check --exclude web/settings -l 100
+```

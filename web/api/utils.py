@@ -1,11 +1,7 @@
-from abc import ABCMeta
-
-
 class Service(object):
     """
     Abstract class for inheritance singleton service.
     """
-    __metaclass__ = ABCMeta
 
     _instance = None
 

@@ -5,7 +5,7 @@ DEBUG = False
 # SECURITY WARNING: set allowed hosts!
 ALLOWED_HOSTS = ['*']
 
-
+# LOGGING
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
